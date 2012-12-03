@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Searcher QUnit Tests</title>
+ 
+    <link rel="stylesheet" href="qunit.css" />
+    <script src="jquery-1.7.1.min.js"></script>
+    <script src="qunit.js"></script>
+    <script src="searcher.js"></script>
+ 
+    <script>
+	    $(document).ready(function() {
+			
+			//
+			// One, Two, Three Single Word Searches
+			//
+			
+	    	test("should find single word", function() {
+				var searchTerms = ['me'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), true);
+		    });
+			
+	    	test("should find two words", function() {
+				var searchTerms = ['me', 'tell'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), true);
+		    });
+			
+	    	test("should find three words", function() {
+				var searchTerms = ['me', 'tell', 'story'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), true);
+		    });
+			
+
+			//
+			// One, Two, Three Missing Single Word Searches
+			//	
+			
+	    	test("should not find single word", function() {
+				var searchTerms = ['missing'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), false);
+		    });
+			
+	    	test("should not find two words", function() {
+				var searchTerms = ['missing', 'two'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), false);
+		    });
+			
+	    	test("should not find three words", function() {
+				var searchTerms = ['missing', 'two', 'three'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), false);
+		    });
+			
+			
+			//
+			// First, Second, Last Missing Single Word Searches
+			//			
+			
+	    	test("should not find if first word missing", function() {
+				var searchTerms = ['missing', 'me', 'tell'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), false);
+		    });
+			
+	    	test("should not find if second word missing", function() {
+				var searchTerms = ['me', 'missing', 'tell'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), false);
+		    });
+			
+	    	test("should not find if last word missing", function() {
+				var searchTerms = ['me', 'tell', 'missing'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), false);
+		    });
+
+
+			
+	    	test("should find with case insensitive", function() {
+				var searchTerms = ['TELL'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again'), true);
+		    });
+			
+	    	test("should find last word", function() {
+				var searchTerms = ['again'];
+				equal(searcher(searchTerms,'Tell me a story and then tell me again.'), true);
+		    });
+			
+	    	test("should find first word", function() {
+				var searchTerms = ['oh'];
+				equal(searcher(searchTerms,'Oh Tell me a story and then tell me again.'), true);
+		    });
+			
+			
+			//
+			// Right Wildcard Seaching
+			//
+			
+	    	test("should find with right wildcard", function() {
+				var searchTerms = ['faith*'];
+				equal(searcher(searchTerms,'This is a faithful saying.'), true);
+		    });
+						
+	    	test("should not find right wildcard word", function() {
+				var searchTerms = ['faith*'];
+				equal(searcher(searchTerms,'This is a unfaithful saying.'), false);
+		    });
+			
+	    	test("should find last word with right wildcard", function() {
+				var searchTerms = ['say*'];
+				equal(searcher(searchTerms,'This is a faithful saying.'), true);
+		    });
+			
+	    	test("should find first word with right wildcard", function() {
+				var searchTerms = ['faith*'];
+				equal(searcher(searchTerms,'Faithful saying this is.'), true);
+		    });
+			
+	    	test("should find base word with right wildcard", function() {
+				var searchTerms = ['faith*'];
+				equal(searcher(searchTerms,'Faith saying this is.'), true);
+		    });
+			
+			
+			//
+			// Left Wildcard Seaching
+			//
+			
+	    	test("should find with left wildcard", function() {
+				var searchTerms = ['*faithful'];
+				equal(searcher(searchTerms,'This is a unfaithful saying.'), true);
+		    });
+						
+	    	test("should not find left wildcard word", function() {
+				var searchTerms = ['*faithful'];
+				equal(searcher(searchTerms,'This is a unfaithfully saying.'), false);
+		    });
+			
+	    	test("should find last word with left wildcard", function() {
+				var searchTerms = ['*faithful'];
+				equal(searcher(searchTerms,'This is a unfaithful.'), true);
+		    });
+			
+	    	test("should find first word with left wildcard", function() {
+				var searchTerms = ['*faithful'];
+				equal(searcher(searchTerms,'Unfaithful saying this is.'), true);
+		    });
+			
+	    	test("should find base word with left wildcard", function() {
+				var searchTerms = ['*faithful'];
+				equal(searcher(searchTerms,'Faithful saying this is.'), true);
+		    });
+			
+			
+			//
+			// Left & Right Wildcard Seaching
+			//
+			
+	    	test("should find with left and right wildcard", function() {
+				var searchTerms = ['*faith*'];
+				equal(searcher(searchTerms,'This is a unfaithful saying.'), true);
+		    });
+						
+	    	test("should not find left and right wildcard word", function() {
+				var searchTerms = ['*faith*'];
+				equal(searcher(searchTerms,'This is a saying.'), false);
+		    });
+			
+	    	test("should find last word with left and right wildcard", function() {
+				var searchTerms = ['*faith*'];
+				equal(searcher(searchTerms,'This is a unfaithful.'), true);
+		    });
+			
+	    	test("should find first word with left and right wildcard", function() {
+				var searchTerms = ['*faith*'];
+				equal(searcher(searchTerms,'Unfaithful saying this is.'), true);
+		    });
+			
+	    	test("should find base word with left and right wildcard", function() {
+				var searchTerms = ['*faith*'];
+				equal(searcher(searchTerms,'Faith is strong.'), true);
+		    });
+			
+		});
+    </script>
+</head>
+<body>
+    <div id="qunit"></div>		
+</body>
+</html>
